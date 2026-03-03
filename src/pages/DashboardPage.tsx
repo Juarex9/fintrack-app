@@ -1,6 +1,7 @@
 import React from "react";
 import Topbar from "../app/layout/Topbar";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { transactionsStorage } from "../libs/storage/transactions.storage";
 import { budgetsStorage } from "../libs/storage/budgets.storage";
@@ -122,6 +123,7 @@ const DONUT_COLORS = [
 ];
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [month, setMonth] = React.useState(currentMonth());
 
@@ -183,41 +185,43 @@ export default function DashboardPage() {
     return goals.filter((g) => g.status !== "paused").slice(0, 3);
   }, [goals]);
 
-  // Alerts
+  // Alerts (translated + interpolated)
   const alerts = React.useMemo<AlertItem[]>(() => {
     const a: AlertItem[] = [];
+    const warnPctLocal = warnThreshold * 100;
 
     if (budgetTotal > 0) {
       if (budgetPct >= 100) {
         a.push({
           kind: "danger",
-          title: "Budget exceeded",
-          description: `You used ${Math.round(budgetPct)}% of your monthly budget (${formatARS(
-            expense
-          )} / ${formatARS(budgetTotal)}).`,
+          title: t("alerts.total.exceeded.title"),
+          description: t("alerts.total.exceeded.desc", {
+            pct: Math.round(budgetPct),
+            spent: formatARS(expense),
+            total: formatARS(budgetTotal),
+          }),
         });
-      } else if (budgetPct >= warnThreshold * 100) {
+      } else if (budgetPct >= warnPctLocal) {
         a.push({
           kind: "warning",
-          title: "Close to budget limit",
-          description: `You used ${Math.round(
-            budgetPct
-          )}% of your monthly budget. Warning threshold is ${Math.round(
-            warnThreshold * 100
-          )}%.`,
+          title: t("alerts.total.near.title"),
+          description: t("alerts.total.near.desc", {
+            pct: Math.round(budgetPct),
+            warn: Math.round(warnPctLocal),
+          }),
         });
       } else {
         a.push({
           kind: "info",
-          title: "Budget status",
-          description: `You used ${Math.round(budgetPct)}% of your monthly budget.`,
+          title: t("alerts.total.ok.title"),
+          description: t("alerts.total.ok.desc", { pct: Math.round(budgetPct) }),
         });
       }
     } else {
       a.push({
         kind: "info",
-        title: "No budget set",
-        description: "Set a monthly budget to unlock warnings and usage tracking.",
+        title: t("alerts.total.none.title"),
+        description: t("alerts.total.none.desc"),
       });
     }
 
@@ -232,23 +236,27 @@ export default function DashboardPage() {
       for (const x of entries) {
         const pct = x.limit > 0 ? (x.spent / x.limit) * 100 : 0;
         const catName =
-          categories.find((c) => c.id === x.categoryId)?.name ?? "Category";
+          categories.find((c) => c.id === x.categoryId)?.name ?? t("common.category");
 
         if (pct >= 100) {
           a.push({
             kind: "danger",
-            title: `Category exceeded: ${catName}`,
-            description: `${Math.round(pct)}% used (${formatARS(x.spent)} / ${formatARS(
-              x.limit
-            )}).`,
+            title: t("alerts.category.exceeded.title", { name: catName }),
+            description: t("alerts.category.exceeded.desc", {
+              pct: Math.round(pct),
+              spent: formatARS(x.spent),
+              limit: formatARS(x.limit),
+            }),
           });
-        } else if (pct >= warnThreshold * 100) {
+        } else if (pct >= warnPctLocal) {
           a.push({
             kind: "warning",
-            title: `Close to limit: ${catName}`,
-            description: `${Math.round(pct)}% used (${formatARS(x.spent)} / ${formatARS(
-              x.limit
-            )}).`,
+            title: t("alerts.category.near.title", { name: catName }),
+            description: t("alerts.category.near.desc", {
+              pct: Math.round(pct),
+              spent: formatARS(x.spent),
+              limit: formatARS(x.limit),
+            }),
           });
         }
       }
@@ -256,6 +264,7 @@ export default function DashboardPage() {
 
     return a.slice(0, 6);
   }, [
+    t,
     budgetTotal,
     budgetPct,
     warnThreshold,
@@ -278,29 +287,37 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Topbar title="Dashboard" month={month} onMonthChange={setMonth} />
+      <Topbar title={t("dashboard.title")} month={month} onMonthChange={setMonth} />
 
       <div className="p-6 space-y-6">
         {/* KPI row */}
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <StatCard
-            label="Income (month)"
+            label={t("dashboard.kpi.incomeMonth")}
             value={formatARS(income)}
-            hint={`${monthTx.filter((t) => t.type === "income").length} income transactions`}
+            hint={t("dashboard.hints.incomeTxCount", {
+              count: monthTx.filter((x) => x.type === "income").length,
+            })}
           />
           <StatCard
-            label="Expenses (month)"
+            label={t("dashboard.kpi.expensesMonth")}
             value={formatARS(expense)}
-            hint={`${monthTx.filter((t) => t.type === "expense").length} expense transactions`}
+            hint={t("dashboard.hints.expenseTxCount", {
+              count: monthTx.filter((x) => x.type === "expense").length,
+            })}
           />
-          <StatCard label="Balance" value={formatARS(balance)} hint="Income - expenses" />
           <StatCard
-            label="Budget usage"
+            label={t("dashboard.kpi.balance")}
+            value={formatARS(balance)}
+            hint={t("dashboard.hints.incomeMinusExpense")}
+          />
+          <StatCard
+            label={t("dashboard.kpi.budgetUsage")}
             value={budgetTotal > 0 ? `${Math.round(budgetPct)}%` : "—"}
             hint={
               budgetTotal > 0
                 ? `${formatARS(expense)} / ${formatARS(budgetTotal)}`
-                : "Set a monthly budget"
+                : t("dashboard.hints.setMonthlyBudget")
             }
           />
         </div>
@@ -308,11 +325,11 @@ export default function DashboardPage() {
         {/* Main grid */}
         <div className="grid gap-4 xl:grid-cols-3">
           <div className="xl:col-span-2 space-y-4">
-            <Panel title="Spending over time">
+            <Panel title={t("dashboard.panels.spendingOverTime")}>
               <div className="h-64">
                 {dailySeries.length === 0 ? (
                   <div className="h-full rounded-xl border border-dashed border-white/15 bg-slate-950/30 flex items-center justify-center text-sm text-slate-500">
-                    No expense data for this month.
+                    {t("dashboard.empty.noExpenseData")}
                   </div>
                 ) : (
                   <ResponsiveContainer width="100%" height="100%">
@@ -347,13 +364,16 @@ export default function DashboardPage() {
               </div>
             </Panel>
 
-            <Panel title="Expenses by category" right={<span className="text-xs text-slate-500">Click to filter</span>}>
+            <Panel
+              title={t("dashboard.panels.expensesByCategory")}
+              right={<span className="text-xs text-slate-500">{t("dashboard.hints.clickToFilter")}</span>}
+            >
               <div className="grid gap-4 md:grid-cols-2">
                 {/* Bar */}
                 <div className="h-64">
                   {categorySeries.length === 0 ? (
                     <div className="h-full rounded-xl border border-dashed border-white/15 bg-slate-950/30 flex items-center justify-center text-sm text-slate-500">
-                      No category expense data yet.
+                      {t("dashboard.empty.noCategoryData")}
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
@@ -372,7 +392,9 @@ export default function DashboardPage() {
                           axisLine={{ stroke: "rgba(255,255,255,0.12)" }}
                           tickLine={{ stroke: "rgba(255,255,255,0.12)" }}
                           interval={0}
-                          tickFormatter={(v) => (String(v).length > 10 ? String(v).slice(0, 10) + "…" : String(v))}
+                          tickFormatter={(v) =>
+                            String(v).length > 10 ? String(v).slice(0, 10) + "…" : String(v)
+                          }
                         />
                         <YAxis
                           tick={{ fill: "rgba(226,232,240,0.7)", fontSize: 12 }}
@@ -399,7 +421,7 @@ export default function DashboardPage() {
                 <div className="h-64">
                   {categorySeries.length === 0 ? (
                     <div className="h-full rounded-xl border border-dashed border-white/15 bg-slate-950/30 flex items-center justify-center text-sm text-slate-500">
-                      No data.
+                      {t("dashboard.empty.noData")}
                     </div>
                   ) : (
                     <ResponsiveContainer width="100%" height="100%">
@@ -435,9 +457,12 @@ export default function DashboardPage() {
               </div>
             </Panel>
 
-            <Panel title="Top categories (spent vs limit)" right={<span className="text-xs text-slate-500">Click to filter</span>}>
+            <Panel
+              title={t("dashboard.panels.topCategories")}
+              right={<span className="text-xs text-slate-500">{t("dashboard.hints.clickToFilter")}</span>}
+            >
               {topCategories.length === 0 ? (
-                <div className="text-sm text-slate-400">No category spending yet for this month.</div>
+                <div className="text-sm text-slate-400">{t("dashboard.empty.noTopCategories")}</div>
               ) : (
                 <div className="space-y-3">
                   {topCategories.map((r) => {
@@ -446,7 +471,11 @@ export default function DashboardPage() {
                     const pct = limit > 0 ? Math.min(999, (spent / limit) * 100) : 0;
 
                     const kind: AlertKind =
-                      limit > 0 && pct >= 100 ? "danger" : limit > 0 && pct >= warnPct ? "warning" : "info";
+                      limit > 0 && pct >= 100
+                        ? "danger"
+                        : limit > 0 && pct >= warnPct
+                        ? "warning"
+                        : "info";
 
                     return (
                       <div
@@ -480,10 +509,19 @@ export default function DashboardPage() {
                         </div>
 
                         <div className="mt-2 flex items-center justify-between text-xs text-slate-500">
-                          <span>{limit > 0 ? `${Math.round(pct)}% used` : "No limit set"}</span>
+                          <span>
+                            {limit > 0
+                              ? t("dashboard.labels.pctUsed", { pct: Math.round(pct) })
+                              : t("dashboard.labels.noLimit")}
+                          </span>
+
                           {limit > 0 && (
                             <span className={cx("rounded-lg border px-2 py-0.5", pillClasses(kind))}>
-                              {kind === "danger" ? "exceeded" : kind === "warning" ? "warning" : "ok"}
+                              {kind === "danger"
+                                ? t("dashboard.badges.exceeded")
+                                : kind === "warning"
+                                ? t("dashboard.badges.warning")
+                                : t("dashboard.badges.ok")}
                             </span>
                           )}
                         </div>
@@ -496,10 +534,10 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-4">
-            <Panel title="Budget status">
+            <Panel title={t("dashboard.panels.budgetStatus")}>
               <div className="rounded-xl border border-white/10 bg-slate-950/30 p-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-slate-300">Total monthly budget</span>
+                  <span className="text-slate-300">{t("dashboard.labels.totalMonthlyBudget")}</span>
                   <span className="text-slate-100 font-medium">
                     {budgetTotal > 0 ? formatARS(budgetTotal) : "—"}
                   </span>
@@ -514,19 +552,25 @@ export default function DashboardPage() {
 
                 <div className="mt-2 text-xs text-slate-500">
                   {budgetTotal > 0
-                    ? `${Math.round(budgetPct)}% used • warning at ${Math.round(warnPct)}%`
-                    : "Set a budget in Budgets page"}
+                    ? t("dashboard.labels.budgetUsedWarnAt", {
+                        used: Math.round(budgetPct),
+                        warn: Math.round(warnPct),
+                      })
+                    : t("dashboard.hints.setBudgetInBudgets")}
                 </div>
               </div>
             </Panel>
 
-            <Panel title="Goals">
+            <Panel title={t("dashboard.panels.goals")}>
               {activeGoals.length === 0 ? (
-                <div className="text-sm text-slate-400">No goals yet.</div>
+                <div className="text-sm text-slate-400">{t("dashboard.empty.noGoals")}</div>
               ) : (
                 <div className="space-y-3">
                   {activeGoals.map((g) => {
-                    const pct = g.targetAmount > 0 ? Math.min(100, (g.currentAmount / g.targetAmount) * 100) : 0;
+                    const pct =
+                      g.targetAmount > 0
+                        ? Math.min(100, (g.currentAmount / g.targetAmount) * 100)
+                        : 0;
                     return (
                       <div
                         key={g.id}
@@ -540,7 +584,10 @@ export default function DashboardPage() {
                           {formatARS(g.currentAmount)} / {formatARS(g.targetAmount)}
                         </div>
                         <div className="mt-3 h-2 w-full rounded-full bg-white/10">
-                          <div className="h-2 rounded-full bg-emerald-500" style={{ width: `${pct}%` }} />
+                          <div
+                            className="h-2 rounded-full bg-emerald-500"
+                            style={{ width: `${pct}%` }}
+                          />
                         </div>
                       </div>
                     );
@@ -549,9 +596,9 @@ export default function DashboardPage() {
               )}
             </Panel>
 
-            <Panel title="Alerts">
+            <Panel title={t("dashboard.panels.alerts")}>
               {alerts.length === 0 ? (
-                <div className="text-sm text-slate-400">No alerts.</div>
+                <div className="text-sm text-slate-400">{t("dashboard.empty.noAlerts")}</div>
               ) : (
                 <div className="space-y-3">
                   {alerts.map((a, idx) => (

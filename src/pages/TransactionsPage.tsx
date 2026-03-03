@@ -1,6 +1,7 @@
 import React from "react";
 import Topbar from "../app/layout/Topbar";
 import { useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { transactionsStorage } from "../libs/storage/transactions.storage";
 import { categoriesStorage } from "../libs/storage/categories.storage";
@@ -15,15 +16,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const schema = z.object({
-  type: z.enum(["income", "expense"]),
-  amount: z.coerce.number().positive("El monto debe ser mayor a 0"),
-  date: z.string().min(10, "Fecha inválida"),
-  categoryId: z.string().min(1, "Elegí una categoría"),
-  note: z.string().max(120).optional(),
-});
-
-type FormValues = z.infer<typeof schema>;
+type FormValues = {
+  type: "income" | "expense";
+  amount: number;
+  date: string;
+  categoryId: string;
+  note?: string;
+};
 
 type SortKey = "date_desc" | "date_asc" | "amount_desc" | "amount_asc";
 
@@ -52,7 +51,21 @@ function cmp(sort: SortKey) {
 }
 
 export default function TransactionsPage() {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  // schema needs t(), so define inside component
+  const schema = React.useMemo(
+    () =>
+      z.object({
+        type: z.enum(["income", "expense"]),
+        amount: z.coerce.number().positive(t("transactions.form.errors.amountPositive")),
+        date: z.string().min(10, t("transactions.form.errors.invalidDate")),
+        categoryId: z.string().min(1, t("transactions.form.errors.pickCategory")),
+        note: z.string().max(120, t("transactions.form.errors.noteTooLong")).optional(),
+      }),
+    [t]
+  );
 
   // --- Read from URL
   const initialMonth = searchParams.get("month") ?? currentMonth();
@@ -62,7 +75,7 @@ export default function TransactionsPage() {
   const initialQ = searchParams.get("q") ?? "";
   const initialSort = (searchParams.get("sort") as SortKey | null) ?? "date_desc";
   const initialFrom = searchParams.get("from") ?? ""; // YYYY-MM-DD
-  const initialTo = searchParams.get("to") ?? "";     // YYYY-MM-DD
+  const initialTo = searchParams.get("to") ?? ""; // YYYY-MM-DD
 
   const [month, setMonth] = React.useState(initialMonth);
   const [typeFilter, setTypeFilter] = React.useState<TxType | "all">(initialType ?? "all");
@@ -185,30 +198,32 @@ export default function TransactionsPage() {
 
   return (
     <>
-      <Topbar title="Transactions" month={month} onMonthChange={setMonth} />
+      <Topbar title={t("nav.transactions")} month={month} onMonthChange={setMonth} />
 
       <div className="p-6 space-y-6">
         {/* FORM */}
         <div className="rounded-2xl border border-white/10 bg-slate-900/30 p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-medium text-slate-100">Add transaction</h2>
+            <h2 className="text-sm font-medium text-slate-100">
+              {t("transactions.form.title")}
+            </h2>
             <div className="text-xs text-slate-400">LocalStorage</div>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="mt-4 grid gap-3 md:grid-cols-12">
             <div className="md:col-span-2">
-              <label className="text-xs text-slate-400">Type</label>
+              <label className="text-xs text-slate-400">{t("transactions.form.type")}</label>
               <select
                 {...register("type")}
                 className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/40"
               >
-                <option value="expense">Expense</option>
-                <option value="income">Income</option>
+                <option value="expense">{t("transactions.types.expense")}</option>
+                <option value="income">{t("transactions.types.income")}</option>
               </select>
             </div>
 
             <div className="md:col-span-3">
-              <label className="text-xs text-slate-400">Amount</label>
+              <label className="text-xs text-slate-400">{t("transactions.form.amount")}</label>
               <input
                 type="number"
                 step="1"
@@ -221,7 +236,7 @@ export default function TransactionsPage() {
             </div>
 
             <div className="md:col-span-3">
-              <label className="text-xs text-slate-400">Date</label>
+              <label className="text-xs text-slate-400">{t("transactions.form.date")}</label>
               <input
                 type="date"
                 {...register("date")}
@@ -233,12 +248,12 @@ export default function TransactionsPage() {
             </div>
 
             <div className="md:col-span-4">
-              <label className="text-xs text-slate-400">Category</label>
+              <label className="text-xs text-slate-400">{t("transactions.form.category")}</label>
               <select
                 {...register("categoryId")}
                 className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/40"
               >
-                <option value="">Select...</option>
+                <option value="">{t("transactions.form.selectPlaceholder")}</option>
                 {categoriesForForm.map((c) => (
                   <option key={c.id} value={c.id}>
                     {c.name}
@@ -251,11 +266,11 @@ export default function TransactionsPage() {
             </div>
 
             <div className="md:col-span-10">
-              <label className="text-xs text-slate-400">Note (optional)</label>
+              <label className="text-xs text-slate-400">{t("transactions.form.noteOptional")}</label>
               <input
                 {...register("note")}
                 className="mt-1 h-10 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/40"
-                placeholder="e.g. groceries, uber..."
+                placeholder={t("transactions.form.notePlaceholder")}
               />
               {formState.errors.note && (
                 <p className="mt-1 text-xs text-rose-400">{formState.errors.note.message}</p>
@@ -267,7 +282,7 @@ export default function TransactionsPage() {
                 type="submit"
                 className="h-10 w-full rounded-xl bg-indigo-500 text-sm font-medium text-white hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
               >
-                Save
+                {t("actions.save")}
               </button>
             </div>
           </form>
@@ -279,7 +294,7 @@ export default function TransactionsPage() {
           <div className="px-5 py-3 border-b border-white/10 flex flex-col gap-3">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div className="text-sm font-medium text-slate-100">
-                Transactions ({filtered.length})
+                {t("transactions.list.title", { count: filtered.length })}
               </div>
 
               <div className="flex gap-2">
@@ -287,13 +302,13 @@ export default function TransactionsPage() {
                   onClick={refresh}
                   className="h-9 rounded-xl bg-white/5 px-3 text-sm text-slate-100 hover:bg-white/10"
                 >
-                  Refresh
+                  {t("actions.refresh")}
                 </button>
                 <button
                   onClick={clearFilters}
                   className="h-9 rounded-xl bg-white/5 px-3 text-sm text-slate-100 hover:bg-white/10"
                 >
-                  Clear
+                  {t("actions.clear")}
                 </button>
               </div>
             </div>
@@ -304,7 +319,7 @@ export default function TransactionsPage() {
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search note..."
+                  placeholder={t("transactions.filters.searchPlaceholder")}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
                 />
               </div>
@@ -320,9 +335,9 @@ export default function TransactionsPage() {
                   }}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
                 >
-                  <option value="all">All</option>
-                  <option value="expense">Expenses</option>
-                  <option value="income">Income</option>
+                  <option value="all">{t("transactions.filters.all")}</option>
+                  <option value="expense">{t("transactions.filters.expenses")}</option>
+                  <option value="income">{t("transactions.filters.income")}</option>
                 </select>
               </div>
 
@@ -333,7 +348,7 @@ export default function TransactionsPage() {
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
                 >
-                  <option value="all">All categories</option>
+                  <option value="all">{t("transactions.filters.allCategories")}</option>
                   {categoryOptions.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -349,21 +364,21 @@ export default function TransactionsPage() {
                   onChange={(e) => setSort(e.target.value as SortKey)}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
                 >
-                  <option value="date_desc">Date ↓</option>
-                  <option value="date_asc">Date ↑</option>
-                  <option value="amount_desc">Amount ↓</option>
-                  <option value="amount_asc">Amount ↑</option>
+                  <option value="date_desc">{t("transactions.sort.dateDesc")}</option>
+                  <option value="date_asc">{t("transactions.sort.dateAsc")}</option>
+                  <option value="amount_desc">{t("transactions.sort.amountDesc")}</option>
+                  <option value="amount_asc">{t("transactions.sort.amountAsc")}</option>
                 </select>
               </div>
 
-              {/* from/to (optional range) */}
+              {/* from/to */}
               <div className="md:col-span-3">
                 <input
                   type="date"
                   value={from}
                   onChange={(e) => setFrom(e.target.value)}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
-                  title="From"
+                  title={t("transactions.filters.from")}
                 />
               </div>
               <div className="md:col-span-3">
@@ -372,7 +387,7 @@ export default function TransactionsPage() {
                   value={to}
                   onChange={(e) => setTo(e.target.value)}
                   className="h-9 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm text-slate-100 outline-none"
-                  title="To"
+                  title={t("transactions.filters.to")}
                 />
               </div>
             </div>
@@ -380,51 +395,50 @@ export default function TransactionsPage() {
 
           <div className="p-2">
             {filtered.length === 0 ? (
-              <div className="p-6 text-sm text-slate-400">
-                No transactions for this selection.
-              </div>
+              <div className="p-6 text-sm text-slate-400">{t("transactions.empty")}</div>
             ) : (
               <ul className="divide-y divide-white/5">
-                {filtered.map((t) => (
-                  <li key={t.id} className="flex items-center gap-3 px-3 py-3">
+                {filtered.map((tx) => (
+                  <li key={tx.id} className="flex items-center gap-3 px-3 py-3">
                     <div
                       className={cx(
                         "h-9 w-9 rounded-xl flex items-center justify-center text-xs font-semibold",
-                        t.type === "income"
+                        tx.type === "income"
                           ? "bg-emerald-500/15 text-emerald-300"
                           : "bg-rose-500/15 text-rose-300"
                       )}
+                      title={tx.type === "income" ? t("transactions.types.income") : t("transactions.types.expense")}
                     >
-                      {t.type === "income" ? "+" : "-"}
+                      {tx.type === "income" ? "+" : "-"}
                     </div>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
                         <div className="truncate text-sm text-slate-100">
-                          {t.note || "Transaction"}
+                          {tx.note || t("transactions.item.defaultTitle")}
                         </div>
                         <div className="text-sm font-medium text-slate-50">
-                          {formatARS(t.amount)}
+                          {formatARS(tx.amount)}
                         </div>
                       </div>
                       <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
-                        <span>{t.date}</span>
+                        <span>{tx.date}</span>
                         <span className="truncate">
                           {categoriesStorage
                             .list()
-                            .find((c) => c.id === t.categoryId)?.name ?? "—"}
+                            .find((c) => c.id === tx.categoryId)?.name ?? "—"}
                         </span>
                       </div>
                     </div>
 
                     <button
                       onClick={() => {
-                        transactionsStorage.remove(t.id);
+                        transactionsStorage.remove(tx.id);
                         refresh();
                       }}
                       className="rounded-lg px-3 py-2 text-xs text-slate-400 hover:bg-white/5 hover:text-slate-100"
                     >
-                      Delete
+                      {t("actions.delete")}
                     </button>
                   </li>
                 ))}

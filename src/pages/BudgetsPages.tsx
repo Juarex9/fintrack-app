@@ -1,5 +1,7 @@
 import React from "react";
 import Topbar from "../app/layout/Topbar";
+import { useTranslation } from "react-i18next";
+
 import { budgetsStorage } from "../libs/storage/budgets.storage";
 import { categoriesStorage } from "../libs/storage/categories.storage";
 import { currentMonth } from "../libs/utils/dates";
@@ -12,6 +14,7 @@ function clampNum(n: number) {
 }
 
 export default function BudgetsPage() {
+  const { t } = useTranslation();
   const [month, setMonth] = React.useState(currentMonth());
 
   const expenseCategories = React.useMemo(
@@ -52,28 +55,30 @@ export default function BudgetsPage() {
 
   function save() {
     budgetsStorage.set({ ...budget, month });
-    alert("Budget saved!");
+    alert(t("budgets.toast.saved"));
   }
 
   return (
     <>
-      <Topbar title="Budgets" month={month} onMonthChange={setMonth} />
+      <Topbar title={t("nav.budgets")} month={month} onMonthChange={setMonth} />
 
       <div className="p-6 space-y-6">
         <div className="rounded-2xl border border-white/10 bg-slate-900/30 p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-medium text-slate-100">Monthly budget</h2>
+            <h2 className="text-sm font-medium text-slate-100">
+              {t("budgets.monthly.title")}
+            </h2>
             <button
               onClick={save}
               className="h-9 rounded-xl bg-indigo-500 px-4 text-sm font-medium text-white hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
             >
-              Save
+              {t("actions.save")}
             </button>
           </div>
 
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-white/10 bg-slate-950/30 p-4">
-              <div className="text-xs text-slate-400">Total budget</div>
+              <div className="text-xs text-slate-400">{t("budgets.monthly.totalBudget")}</div>
               <input
                 type="number"
                 value={budget.totalAmount}
@@ -86,7 +91,7 @@ export default function BudgetsPage() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-slate-950/30 p-4">
-              <div className="text-xs text-slate-400">Warning threshold</div>
+              <div className="text-xs text-slate-400">{t("budgets.monthly.warningThreshold")}</div>
               <input
                 type="number"
                 step="0.05"
@@ -102,18 +107,22 @@ export default function BudgetsPage() {
                 className="mt-2 h-10 w-full rounded-xl border border-white/10 bg-slate-950/40 px-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500/40"
               />
               <div className="mt-2 text-xs text-slate-500">
-                Warnings at {Math.round(budget.warningThreshold * 100)}%
+                {t("budgets.monthly.warnAt", {
+                  pct: Math.round(budget.warningThreshold * 100),
+                })}
               </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-slate-950/30 p-4">
-              <div className="text-xs text-slate-400">Category limits sum</div>
-              <div className="mt-2 text-2xl font-semibold text-slate-50">{formatARS(sumCategories)}</div>
+              <div className="text-xs text-slate-400">{t("budgets.monthly.sumLimits")}</div>
+              <div className="mt-2 text-2xl font-semibold text-slate-50">
+                {formatARS(sumCategories)}
+              </div>
               <div className="mt-2 text-xs text-slate-500">
                 {overTotal ? (
-                  <span className="text-rose-400">Sum exceeds total budget.</span>
+                  <span className="text-rose-400">{t("budgets.monthly.sumOver")}</span>
                 ) : (
-                  <span>Good: within total budget.</span>
+                  <span>{t("budgets.monthly.sumOk")}</span>
                 )}
               </div>
             </div>
@@ -123,9 +132,11 @@ export default function BudgetsPage() {
         {/* Per category */}
         <div className="rounded-2xl border border-white/10 bg-slate-900/30">
           <div className="border-b border-white/10 px-5 py-3">
-            <h2 className="text-sm font-medium text-slate-100">Per-category limits</h2>
+            <h2 className="text-sm font-medium text-slate-100">
+              {t("budgets.categories.title")}
+            </h2>
             <p className="text-xs text-slate-400 mt-1">
-              Optional. Helps alerts/IA detect overspending by category.
+              {t("budgets.categories.subtitle")}
             </p>
           </div>
 
@@ -148,9 +159,9 @@ export default function BudgetsPage() {
                         })
                       }
                       className="text-xs text-slate-500 hover:text-slate-200"
-                      title="Remove limit"
+                      title={t("budgets.categories.removeLimit")}
                     >
-                      Clear
+                      {t("actions.clear")}
                     </button>
                   </div>
 
