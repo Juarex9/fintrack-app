@@ -23,9 +23,29 @@ export const budgetsStorage = {
     const map = read();
     return map[month] ?? null;
   },
+
   set(budget: MonthlyBudget): void {
     const map = read();
     map[budget.month] = budget;
     write(map);
+  },
+
+  // ✅ NUEVO — devuelve todos los budgets como array
+  list(): MonthlyBudget[] {
+    const map = read();
+    return Object.values(map);
+  },
+
+  // ✅ NUEVO — reemplaza TODO el storage
+  replaceAll(items: MonthlyBudget[]): void {
+    const map: BudgetMap = {};
+    items.forEach((b) => {
+      map[b.month] = b;
+    });
+    write(map);
+  },
+
+  reset(): void {
+    write({});
   },
 };

@@ -1,0 +1,245 @@
+{
+    "common": {
+        "category": "Categoría"
+    },
+    "sidebar": {
+        "tagline": "Finanzas personales",
+        "overview": "Resumen",
+        "expandAria": "Expandir menú",
+        "collapseAria": "Contraer menú",
+        "expandTitle": "Expandir",
+        "collapseTitle": "Contraer",
+        "plan": "Plan gratis"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "transactions": "Movimientos",
+        "budgets": "Presupuestos",
+        "goals": "Metas",
+        "settings": "Ajustes"
+    },
+    "topbar": {
+        "subtitle": "Seguimiento de presupuestos, gastos y metas de ahorro.",
+        "month": "Mes"
+    },
+    "actions": {
+        "newTransaction": "Nueva transacción",
+        "save": "Guardar",
+        "delete": "Eliminar",
+        "clear": "Limpiar",
+        "refresh": "Actualizar"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "kpi": {
+            "incomeMonth": "Ingresos (mes)",
+            "expensesMonth": "Gastos (mes)",
+            "balance": "Balance",
+            "budgetUsage": "Uso del presupuesto"
+        },
+        "panels": {
+            "spendingOverTime": "Gastos en el tiempo",
+            "expensesByCategory": "Gastos por categoría",
+            "topCategories": "Top categorías (gastado vs límite)",
+            "budgetStatus": "Estado del presupuesto",
+            "goals": "Metas",
+            "alerts": "Alertas"
+        },
+        "hints": {
+            "incomeTxCount": "{{count}} ingresos cargados",
+            "expenseTxCount": "{{count}} gastos cargados",
+            "incomeMinusExpense": "Ingresos - gastos",
+            "setMonthlyBudget": "Definí un presupuesto mensual",
+            "setBudgetInBudgets": "Definí el presupuesto en Presupuestos",
+            "clickToFilter": "Click para filtrar"
+        },
+        "empty": {
+            "noExpenseData": "No hay datos de gastos para este mes.",
+            "noCategoryData": "Todavía no hay gastos por categoría.",
+            "noData": "Sin datos.",
+            "noTopCategories": "Todavía no hay gastos por categoría este mes.",
+            "noGoals": "Todavía no hay metas.",
+            "noAlerts": "Sin alertas."
+        },
+        "labels": {
+            "pctUsed": "{{pct}}% usado",
+            "noLimit": "Sin límite definido",
+            "totalMonthlyBudget": "Presupuesto mensual total",
+            "budgetUsedWarnAt": "{{used}}% usado • alerta en {{warn}}%"
+        },
+        "badges": {
+            "exceeded": "excedido",
+            "warning": "alerta",
+            "ok": "ok"
+        }
+    },
+    "alerts": {
+        "total": {
+            "exceeded": {
+                "title": "Presupuesto excedido",
+                "desc": "Usaste {{pct}}% de tu presupuesto mensual ({{spent}} / {{total}})."
+            },
+            "near": {
+                "title": "Cerca del límite",
+                "desc": "Usaste {{pct}}% de tu presupuesto mensual. La alerta está en {{warn}}%."
+            },
+            "ok": {
+                "title": "Estado del presupuesto",
+                "desc": "Usaste {{pct}}% de tu presupuesto mensual."
+            },
+            "none": {
+                "title": "Sin presupuesto",
+                "desc": "Definí un presupuesto mensual para activar alertas y seguimiento."
+            }
+        },
+        "category": {
+            "exceeded": {
+                "title": "Categoría excedida: {{name}}",
+                "desc": "{{pct}}% usado ({{spent}} / {{limit}})."
+            },
+            "near": {
+                "title": "Cerca del límite: {{name}}",
+                "desc": "{{pct}}% usado ({{spent}} / {{limit}})."
+            }
+        }
+    },
+    "transactions": {
+        "form": {
+            "title": "Agregar transacción",
+            "type": "Tipo",
+            "amount": "Monto",
+            "date": "Fecha",
+            "category": "Categoría",
+            "selectPlaceholder": "Seleccionar...",
+            "noteOptional": "Nota (opcional)",
+            "notePlaceholder": "ej: supermercado, uber...",
+            "errors": {
+                "amountPositive": "El monto debe ser mayor a 0",
+                "invalidDate": "Fecha inválida",
+                "pickCategory": "Elegí una categoría",
+                "noteTooLong": "La nota es demasiado larga"
+            }
+        },
+        "list": {
+            "title": "Movimientos ({{count}})"
+        },
+        "filters": {
+            "searchPlaceholder": "Buscar por nota...",
+            "all": "Todos",
+            "expenses": "Gastos",
+            "income": "Ingresos",
+            "allCategories": "Todas las categorías",
+            "from": "Desde",
+            "to": "Hasta"
+        },
+        "sort": {
+            "dateDesc": "Fecha ↓",
+            "dateAsc": "Fecha ↑",
+            "amountDesc": "Monto ↓",
+            "amountAsc": "Monto ↑"
+        },
+        "types": {
+            "expense": "Gasto",
+            "income": "Ingreso"
+        },
+        "empty": "No hay transacciones para esta selección.",
+        "item": {
+            "defaultTitle": "Transacción"
+        }
+    },
+    "budgets": {
+        "toast": {
+            "saved": "¡Presupuesto guardado!"
+        },
+        "monthly": {
+            "title": "Presupuesto mensual",
+            "totalBudget": "Presupuesto total",
+            "warningThreshold": "Umbral de alerta",
+            "warnAt": "Alertas en {{pct}}%",
+            "sumLimits": "Suma de límites por categoría",
+            "sumOver": "La suma excede el presupuesto total.",
+            "sumOk": "Bien: dentro del presupuesto total."
+        },
+        "categories": {
+            "title": "Límites por categoría",
+            "subtitle": "Opcional. Ayuda a alertas/IA a detectar exceso de gasto por categoría.",
+            "removeLimit": "Quitar límite"
+        }
+    },
+    "goals": {
+        "form": {
+            "title": "Crear meta de ahorro",
+            "storageHint": "Solo local (por ahora)",
+            "name": "Nombre",
+            "namePlaceholder": "Fondo de emergencia, Viaje, Notebook...",
+            "target": "Objetivo",
+            "current": "Actual",
+            "priority": "Prioridad",
+            "deadlineOptional": "Fecha límite (opcional)",
+            "add": "Agregar meta",
+            "errors": {
+                "nameTooShort": "El nombre es muy corto",
+                "targetPositive": "El objetivo debe ser > 0"
+            }
+        },
+        "list": {
+            "title": "Tus metas ({{count}})"
+        },
+        "empty": "Todavía no hay metas.",
+        "labels": {
+            "deadline": "límite",
+            "complete": "{{pct}}% completado"
+        },
+        "priority": {
+            "low": "Baja",
+            "medium": "Media",
+            "high": "Alta"
+        },
+        "badges": {
+            "done": "hecho"
+        },
+        "actions": {
+            "reopen": "Reabrir",
+            "markDone": "Marcar como hecho"
+        }
+    },
+    "settings": {
+        "status": {
+            "saved": "Ajustes guardados.",
+            "resetDone": "Se borraron todos los datos."
+        },
+        "preferences": {
+            "title": "Preferencias",
+            "language": "Idioma",
+            "currency": "Moneda",
+            "currencyHint": "La moneda por ahora solo afecta la UI.",
+            "weekStartsOn": "La semana empieza",
+            "budgetAlerts": "Alertas de presupuesto",
+            "budgetAlertsHint": "Muestra avisos cuando te acercás a tus límites.",
+            "warningThreshold": "Umbral de alerta",
+            "warnAt": "Alertas en {{pct}}%"
+        },
+        "languages": {
+            "es": "Español",
+            "en": "Inglés"
+        },
+        "week": {
+            "monday": "Lunes",
+            "sunday": "Domingo"
+        },
+        "toggle": {
+            "on": "Activado",
+            "off": "Desactivado"
+        },
+        "data": {
+            "title": "Datos",
+            "subtitle": "Exportá tus datos o reseteá este dispositivo.",
+            "export": "Exportar JSON",
+            "import": "Importar JSON",
+            "resetAll": "Borrar todos los datos",
+            "confirmReset": "Esto va a borrar TODOS tus datos locales (movimientos, presupuestos, metas). ¿Continuar?",
+            "invalidFile": "Archivo JSON inválido.",
+            "importNotEnabled": "La importación está preparada pero todavía no está habilitada. La activamos cuando agreguemos replaceAll/reset en los storages."
+        }
+    }
+}

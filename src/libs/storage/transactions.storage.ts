@@ -26,10 +26,14 @@ export const transactionsStorage = {
     write(items);
   },
   remove(id: string): void {
-    const items = read().filter((t) => t.id !== id);
+    write(read().filter((t) => t.id !== id));
+  },
+
+  // ✅ NUEVO
+  replaceAll(items: Transaction[]): void {
     write(items);
   },
-  clear(): void {
+  reset(): void {
     write([]);
   },
 };

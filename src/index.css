@@ -1,1 +1,38 @@
 @import "tailwindcss";
+
+/* ✅ Tailwind v4: dark variant por clase */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Light tokens */
+:root {
+  --app-bg: 248 250 252;        /* slate-50 */
+  --panel: 255 255 255;         /* white */
+  --panel2: 241 245 249;        /* slate-100 */
+  --text: 15 23 42;             /* slate-900 */
+  --muted: 71 85 105;           /* slate-600 */
+  --border: 226 232 240;        /* slate-200 */
+}
+
+/* Dark tokens */
+.dark {
+  --app-bg: 2 6 23;             /* slate-950 */
+  --panel: 15 23 42;            /* slate-900 */
+  --panel2: 3 7 18;             /* deep */
+  --text: 241 245 249;          /* slate-100 */
+  --muted: 148 163 184;         /* slate-400 */
+  --border: 255 255 255;        /* white (usamos alpha) */
+}
+
+body {
+  background: rgb(var(--app-bg));
+  color: rgb(var(--text));
+}
+
+@layer utilities {
+  .bg-app { background-color: rgb(var(--app-bg) / 1); }
+  .bg-panel { background-color: rgb(var(--panel) / 0.7); }
+  .bg-panel-solid { background-color: rgb(var(--panel) / 1); }
+  .text-app { color: rgb(var(--text) / 1); }
+  .text-muted { color: rgb(var(--muted) / 1); }
+  .border-app { border-color: rgb(var(--border) / 0.18); }
+}

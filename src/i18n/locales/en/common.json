@@ -1,0 +1,245 @@
+{
+    "common": {
+        "category": "Category"
+    },
+    "sidebar": {
+        "tagline": "Personal Finance",
+        "overview": "Overview",
+        "expandAria": "Expand sidebar",
+        "collapseAria": "Collapse sidebar",
+        "expandTitle": "Expand",
+        "collapseTitle": "Collapse",
+        "plan": "Free plan"
+    },
+    "nav": {
+        "dashboard": "Dashboard",
+        "transactions": "Transactions",
+        "budgets": "Budgets",
+        "goals": "Goals",
+        "settings": "Settings"
+    },
+    "topbar": {
+        "subtitle": "Track budgets, spending, and savings goals.",
+        "month": "Month"
+    },
+    "actions": {
+        "newTransaction": "New transaction",
+        "save": "Save",
+        "delete": "Delete",
+        "clear": "Clear",
+        "refresh": "Refresh"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "kpi": {
+            "incomeMonth": "Income (month)",
+            "expensesMonth": "Expenses (month)",
+            "balance": "Balance",
+            "budgetUsage": "Budget usage"
+        },
+        "panels": {
+            "spendingOverTime": "Spending over time",
+            "expensesByCategory": "Expenses by category",
+            "topCategories": "Top categories (spent vs limit)",
+            "budgetStatus": "Budget status",
+            "goals": "Goals",
+            "alerts": "Alerts"
+        },
+        "hints": {
+            "incomeTxCount": "{{count}} income transactions",
+            "expenseTxCount": "{{count}} expense transactions",
+            "incomeMinusExpense": "Income - expenses",
+            "setMonthlyBudget": "Set a monthly budget",
+            "setBudgetInBudgets": "Set a budget in Budgets page",
+            "clickToFilter": "Click to filter"
+        },
+        "empty": {
+            "noExpenseData": "No expense data for this month.",
+            "noCategoryData": "No category expense data yet.",
+            "noData": "No data.",
+            "noTopCategories": "No category spending yet for this month.",
+            "noGoals": "No goals yet.",
+            "noAlerts": "No alerts."
+        },
+        "labels": {
+            "pctUsed": "{{pct}}% used",
+            "noLimit": "No limit set",
+            "totalMonthlyBudget": "Total monthly budget",
+            "budgetUsedWarnAt": "{{used}}% used • warning at {{warn}}%"
+        },
+        "badges": {
+            "exceeded": "exceeded",
+            "warning": "warning",
+            "ok": "ok"
+        }
+    },
+    "alerts": {
+        "total": {
+            "exceeded": {
+                "title": "Budget exceeded",
+                "desc": "You used {{pct}}% of your monthly budget ({{spent}} / {{total}})."
+            },
+            "near": {
+                "title": "Close to budget limit",
+                "desc": "You used {{pct}}% of your monthly budget. Warning threshold is {{warn}}%."
+            },
+            "ok": {
+                "title": "Budget status",
+                "desc": "You used {{pct}}% of your monthly budget."
+            },
+            "none": {
+                "title": "No budget set",
+                "desc": "Set a monthly budget to unlock warnings and usage tracking."
+            }
+        },
+        "category": {
+            "exceeded": {
+                "title": "Category exceeded: {{name}}",
+                "desc": "{{pct}}% used ({{spent}} / {{limit}})."
+            },
+            "near": {
+                "title": "Close to limit: {{name}}",
+                "desc": "{{pct}}% used ({{spent}} / {{limit}})."
+            }
+        }
+    },
+    "transactions": {
+        "form": {
+            "title": "Add transaction",
+            "type": "Type",
+            "amount": "Amount",
+            "date": "Date",
+            "category": "Category",
+            "selectPlaceholder": "Select...",
+            "noteOptional": "Note (optional)",
+            "notePlaceholder": "e.g. groceries, uber...",
+            "errors": {
+                "amountPositive": "Amount must be greater than 0",
+                "invalidDate": "Invalid date",
+                "pickCategory": "Choose a category",
+                "noteTooLong": "Note is too long"
+            }
+        },
+        "list": {
+            "title": "Transactions ({{count}})"
+        },
+        "filters": {
+            "searchPlaceholder": "Search note...",
+            "all": "All",
+            "expenses": "Expenses",
+            "income": "Income",
+            "allCategories": "All categories",
+            "from": "From",
+            "to": "To"
+        },
+        "sort": {
+            "dateDesc": "Date ↓",
+            "dateAsc": "Date ↑",
+            "amountDesc": "Amount ↓",
+            "amountAsc": "Amount ↑"
+        },
+        "types": {
+            "expense": "Expense",
+            "income": "Income"
+        },
+        "empty": "No transactions for this selection.",
+        "item": {
+            "defaultTitle": "Transaction"
+        }
+    },
+    "budgets": {
+        "toast": {
+            "saved": "Budget saved!"
+        },
+        "monthly": {
+            "title": "Monthly budget",
+            "totalBudget": "Total budget",
+            "warningThreshold": "Warning threshold",
+            "warnAt": "Warnings at {{pct}}%",
+            "sumLimits": "Category limits sum",
+            "sumOver": "Sum exceeds total budget.",
+            "sumOk": "Good: within total budget."
+        },
+        "categories": {
+            "title": "Per-category limits",
+            "subtitle": "Optional. Helps alerts/AI detect overspending by category.",
+            "removeLimit": "Remove limit"
+        }
+    },
+    "goals": {
+        "form": {
+            "title": "Create savings goal",
+            "storageHint": "Local only (today)",
+            "name": "Name",
+            "namePlaceholder": "Emergency fund, Trip, New laptop...",
+            "target": "Target",
+            "current": "Current",
+            "priority": "Priority",
+            "deadlineOptional": "Deadline (optional)",
+            "add": "Add goal",
+            "errors": {
+                "nameTooShort": "Name too short",
+                "targetPositive": "Target must be > 0"
+            }
+        },
+        "list": {
+            "title": "Your goals ({{count}})"
+        },
+        "empty": "No goals yet.",
+        "labels": {
+            "deadline": "deadline",
+            "complete": "{{pct}}% complete"
+        },
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+        },
+        "badges": {
+            "done": "done"
+        },
+        "actions": {
+            "reopen": "Reopen",
+            "markDone": "Mark done"
+        }
+    },
+    "settings": {
+        "status": {
+            "saved": "Settings saved.",
+            "resetDone": "All data cleared."
+        },
+        "preferences": {
+            "title": "Preferences",
+            "language": "Language",
+            "currency": "Currency",
+            "currencyHint": "Currency selection is UI-only for now.",
+            "weekStartsOn": "Week starts on",
+            "budgetAlerts": "Budget alerts",
+            "budgetAlertsHint": "Show warnings when you approach your budget limits.",
+            "warningThreshold": "Warning threshold",
+            "warnAt": "Warnings at {{pct}}%"
+        },
+        "languages": {
+            "es": "Spanish",
+            "en": "English"
+        },
+        "week": {
+            "monday": "Monday",
+            "sunday": "Sunday"
+        },
+        "toggle": {
+            "on": "On",
+            "off": "Off"
+        },
+        "data": {
+            "title": "Data",
+            "subtitle": "Export your data or reset this device.",
+            "export": "Export JSON",
+            "import": "Import JSON",
+            "resetAll": "Reset all data",
+            "confirmReset": "This will delete ALL your local data (transactions, budgets, goals). Continue?",
+            "invalidFile": "Invalid JSON file.",
+            "importNotEnabled": "Import is prepared but not enabled yet. We'll enable it after adding replaceAll/reset in storages."
+        }
+    }
+}

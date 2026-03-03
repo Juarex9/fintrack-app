@@ -18,11 +18,8 @@ function write(items: Goal[]) {
 
 export const goalsStorage = {
   list(): Goal[] {
-    return read().sort((a, b) =>
-      String(b?.createdAt ?? "").localeCompare(String(a?.createdAt ?? ""))
-    );
+    return read().sort((a, b) => (b.createdAt ?? "").localeCompare(a.createdAt ?? ""));
   },
-  
   create(goal: Goal): void {
     const items = read();
     items.push(goal);
@@ -34,5 +31,12 @@ export const goalsStorage = {
   },
   remove(id: string): void {
     write(read().filter((g) => g.id !== id));
+  },
+
+  replaceAll(items: Goal[]): void {
+    write(items);
+  },
+  reset(): void {
+    write([]);
   },
 };
